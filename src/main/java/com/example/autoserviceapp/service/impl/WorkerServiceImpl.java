@@ -1,9 +1,8 @@
 package com.example.autoserviceapp.service.impl;
 
 import com.example.autoserviceapp.model.Order;
-import com.example.autoserviceapp.model.OrderStatus;
-import com.example.autoserviceapp.model.Servicing;
 import com.example.autoserviceapp.model.Worker;
+import com.example.autoserviceapp.model.WorkerSalary;
 import com.example.autoserviceapp.repository.ServicingRepository;
 import com.example.autoserviceapp.repository.WorkerRepository;
 import com.example.autoserviceapp.service.OrderService;
@@ -55,28 +54,7 @@ public class WorkerServiceImpl implements WorkerService {
     @Override
     public BigDecimal calculateSalaryByWorkerId(Long workerId) {
         Worker worker = findById(workerId);
-        List<Order> orders = worker.getFulfilledOrders();
-        BigDecimal salary = BigDecimal.ZERO;
-        for (Order order : orders) {
-            if (order.getOrderStatus().equals(OrderStatus.FULFILLEDSUCCESSFULLY)) {
-                List<Servicing> servicings = order.getServicings();
-                if (servicings.size() > 1) {
-                    for (int i = 1; i < servicings.size(); i++) {
-                        if (servicings.get(i).getWorker().getId() == workerId
-                                    && !servicings.get(i).isSalaryPaid()) {
-                            salary = salary.add(servicings.get(i).getPrice()
-                                    .multiply(BigDecimal.valueOf(0.4)));
-                            servicings.get(i).setSalaryPaid(true);
-                            servicingRepository.save(servicings.get(i));
-                        }
-                    }
-                } else {
-                    salary = servicings.get(0).getPrice().multiply(BigDecimal.valueOf(0.4));
-                    servicings.get(0).setSalaryPaid(true);
-                    servicingRepository.save(servicings.get(0));
-                }
-            }
-        }
-        return salary;
+        WorkerSalary salary = new WorkerSalary(worker, servicingRepository);
+        return salary.getSalary();
     }
 }

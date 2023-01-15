@@ -27,4 +27,5 @@ ___
 - Calculate the total price of the order
 - Change the order status to 'FULFILLEDSUCCESSFULLY'
 - Calculate the worker's salary
+- Change the order status to 'PAID'
 

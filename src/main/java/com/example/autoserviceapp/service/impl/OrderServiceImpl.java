@@ -1,7 +1,7 @@
 package com.example.autoserviceapp.service.impl;
 
-import com.example.autoserviceapp.model.Client;
 import com.example.autoserviceapp.model.Order;
+import com.example.autoserviceapp.model.OrderPrice;
 import com.example.autoserviceapp.model.OrderStatus;
 import com.example.autoserviceapp.model.Product;
 import com.example.autoserviceapp.model.Servicing;
@@ -10,7 +10,6 @@ import com.example.autoserviceapp.repository.ProductRepository;
 import com.example.autoserviceapp.repository.ServicingRepository;
 import com.example.autoserviceapp.service.OrderService;
 import com.example.autoserviceapp.service.ProductService;
-import java.math.BigDecimal;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
@@ -90,25 +89,8 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order calculateOrderPrice(Long orderId) {
         Order order = orderRepository.getById(orderId);
-        BigDecimal finalPrice = BigDecimal.valueOf(0);
-        Client client = order.getCar().getOwner();
-        int clientsOrders = client.getOrders().size();
-        List<Servicing> servicings = order.getServicings();
-        if (servicings.size() > 1) {
-            for (int i = 1; i < servicings.size(); i++) {
-                finalPrice = finalPrice.add(servicings.get(i).getPrice().subtract(
-                        BigDecimal.valueOf(clientsOrders * SERVICING_DISCOUNT)));
-            }
-        } else {
-            finalPrice = servicings.get(0).getPrice().subtract(
-                    BigDecimal.valueOf(clientsOrders * SERVICING_DISCOUNT));
-        }
-        List<Product> products = order.getProducts();
-        for (Product product : products) {
-            finalPrice = finalPrice.add(product.getPrice().subtract(
-                    BigDecimal.valueOf(clientsOrders * PRODUCT_DISCOUNT)));
-        }
-        order.setFinalPrice(finalPrice);
+        OrderPrice finalPrice = new OrderPrice(order);
+        order.setFinalPrice(finalPrice.getOrderPrice());
         return save(order);
     }
 }
