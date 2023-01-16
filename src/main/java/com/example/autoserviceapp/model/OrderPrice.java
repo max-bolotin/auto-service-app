@@ -8,6 +8,7 @@ import lombok.Data;
 public class OrderPrice {
     private static final double SERVICING_DISCOUNT = 0.02;
     private static final double PRODUCT_DISCOUNT = 0.01;
+    private static final int DIAGNOSTICS_POSITION = 0;
     private Order order;
 
     public OrderPrice(Order order) {
@@ -25,7 +26,7 @@ public class OrderPrice {
                         BigDecimal.valueOf(clientsOrders * SERVICING_DISCOUNT)));
             }
         } else {
-            finalPrice = servicings.get(0).getPrice().subtract(
+            finalPrice = servicings.get(DIAGNOSTICS_POSITION).getPrice().subtract(
                     BigDecimal.valueOf(clientsOrders * SERVICING_DISCOUNT));
         }
         List<Product> products = order.getProducts();
