@@ -1,5 +1,5 @@
 # Auto Service Application
-___
+
 This is the RESTful API for a simple auto service. It makes possible to register workers, servicings and products, and also register clients of the service and their cars. The application allows calculating the order price (including servicings and products as well as client's personal discount which depends on his/her orders number) and the workers' salary.
 ___
 ## Technologies stack:
